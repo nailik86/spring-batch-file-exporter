@@ -22,7 +22,8 @@ public class JsonFileGenerator<T> implements FileGenerator<T> {
 
     @Override
     public void generate(List<T> items, String outputPath) throws IOException {
-        objectMapper.writeValue(new File(outputPath), items);
+        Object toWrite = (items.size() == 1) ? items.get(0) : items;
+        objectMapper.writeValue(new File(outputPath), toWrite);
     }
 
     @Override

@@ -15,10 +15,21 @@ spring:
     jdbc:
       initialize-schema: always
     job:
-      enabled: true
+      enabled: false
 
+# --- Configuration des exports ---
+# Pour ajouter un nouvel export :
+#   1. Creer une classe qui implemente ExportService
+#   2. Ajouter une entree ci-dessous
 batch:
-  export:
-    format: json          # Changez en csv, xml, yaml, etc.
-    output-dir: ./output
-    chunk-size: 100
+  exports:
+    magasin:
+      bean: magasin
+      file-type: json
+      output-dir: ./output/magasins
+      output-file: magasins_export.json
+    product:
+      bean: product
+      file-type: json
+      output-dir: ./output/products
+      output-file: products_export.json
