@@ -15,26 +15,26 @@ class FileGeneratorFactoryTest {
     @BeforeEach
     void setUp() {
         factory = new FileGeneratorFactory(List.of(
-                new JsonFileGenerator<>(),
-                new CsvFileGenerator<>()
+                new JsonFileGenerator(),
+                new CsvFileGenerator()
         ));
     }
 
     @Test
     void shouldReturnJsonGenerator() {
-        FileGenerator<?> generator = factory.getGenerator("json");
+        FileGenerator generator = factory.getGenerator("json");
         assertThat(generator).isInstanceOf(JsonFileGenerator.class);
     }
 
     @Test
     void shouldReturnCsvGenerator() {
-        FileGenerator<?> generator = factory.getGenerator("csv");
+        FileGenerator generator = factory.getGenerator("csv");
         assertThat(generator).isInstanceOf(CsvFileGenerator.class);
     }
 
     @Test
     void shouldBeCaseInsensitive() {
-        FileGenerator<?> generator = factory.getGenerator("JSON");
+        FileGenerator generator = factory.getGenerator("JSON");
         assertThat(generator).isInstanceOf(JsonFileGenerator.class);
     }
 

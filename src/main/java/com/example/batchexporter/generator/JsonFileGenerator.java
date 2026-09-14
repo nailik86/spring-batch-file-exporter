@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class JsonFileGenerator<T> implements FileGenerator<T> {
+public class JsonFileGenerator implements FileGenerator {
 
     private final ObjectMapper objectMapper;
 
@@ -21,7 +21,7 @@ public class JsonFileGenerator<T> implements FileGenerator<T> {
     }
 
     @Override
-    public void generate(List<T> items, String outputPath) throws IOException {
+    public void generate(List<?> items, String outputPath) throws IOException {
         Object toWrite = (items.size() == 1) ? items.get(0) : items;
         objectMapper.writeValue(new File(outputPath), toWrite);
     }

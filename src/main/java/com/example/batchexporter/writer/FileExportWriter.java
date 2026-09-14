@@ -34,7 +34,7 @@ public class FileExportWriter implements ItemWriter<ProductDto> {
     }
 
     public void flush() throws Exception {
-        FileGenerator<ProductDto> generator = fileGeneratorFactory.getGenerator(outputFormat);
+        FileGenerator generator = fileGeneratorFactory.getGenerator(outputFormat);
         String outputPath = outputDir + "/products_export." + outputFormat;
         generator.generate(buffer, outputPath);
         buffer.clear();

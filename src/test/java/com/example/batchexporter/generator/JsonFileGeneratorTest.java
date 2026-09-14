@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class JsonFileGeneratorTest {
 
-    private final JsonFileGenerator<ProductDto> generator = new JsonFileGenerator<>();
+    private final JsonFileGenerator generator = new JsonFileGenerator();
 
     @Test
     void shouldGenerateJsonFile(@TempDir Path tempDir) throws Exception {

@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CsvFileGeneratorTest {
 
-    private final CsvFileGenerator<ProductDto> generator = new CsvFileGenerator<>();
+    private final CsvFileGenerator generator = new CsvFileGenerator();
 
     @Test
     void shouldGenerateCsvFile(@TempDir Path tempDir) throws Exception {

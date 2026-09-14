@@ -11,12 +11,12 @@ import java.util.List;
 public class GenericExportWriter implements ItemWriter<Object> {
 
     private final ExportService exportService;
-    private final FileGenerator<Object> fileGenerator;
+    private final FileGenerator fileGenerator;
     private final String outputPath;
     private final List<Object> buffer = new ArrayList<>();
 
     public GenericExportWriter(ExportService exportService,
-                               FileGenerator<Object> fileGenerator,
+                               FileGenerator fileGenerator,
                                String outputPath) {
         this.exportService = exportService;
         this.fileGenerator = fileGenerator;

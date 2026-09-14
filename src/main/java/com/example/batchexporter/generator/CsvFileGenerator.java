@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class CsvFileGenerator<T> implements FileGenerator<T> {
+public class CsvFileGenerator implements FileGenerator {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void generate(List<T> items, String outputPath) throws IOException {
+    public void generate(List<?> items, String outputPath) throws IOException {
         List<ProductDto> products = (List<ProductDto>) items;
         try (CSVWriter writer = new CSVWriter(new FileWriter(outputPath))) {
             writer.writeNext(new String[]{"id", "name", "category", "unit_price", "stock_quantity", "total_value"});
