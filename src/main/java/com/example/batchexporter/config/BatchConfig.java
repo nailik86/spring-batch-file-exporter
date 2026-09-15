@@ -3,6 +3,7 @@ package com.example.batchexporter.config;
 import com.example.batchexporter.generator.FileGeneratorFactory;
 import com.example.batchexporter.service.ExportService;
 import com.example.batchexporter.service.ExportServiceRegistry;
+import com.example.batchexporter.generator.FileGenerator;
 import com.example.batchexporter.writer.GenericExportWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -65,12 +66,14 @@ public class BatchConfig {
                 }, transactionManager)
                 .build();
 
+        FileGenerator generator = fileGeneratorFactory.getGenerator(def.getFileType());
+
         Step exportStep = new StepBuilder(name + "_export", jobRepository)
-                .tasklet(new GenericExportWriter(
-                        exportService,
-                        fileGeneratorFactory.getGenerator(def.getFileType()),
-                        outputPath
-                ), transactionManager)
+                .tasklet((contribution, chunkContext) -> {
+                    Object data = exportService.fetchData();
+                    generator.generate(java.util.List.of(data), outputPath);
+                    return RepeatStatus.FINISHED;
+                }, transactionManager)
                 .build();
 
         return new JobBuilder(name + "ExportJob", jobRepository)
