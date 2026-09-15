@@ -24,7 +24,7 @@ public class GenericExportWriter implements ItemWriter<Object> {
     }
 
     @Override
-    public void write(Chunk<?> chunk) {
+    public void write(Chunk<? extends Object> chunk) {
         buffer.addAll(chunk.getItems());
     }
 
