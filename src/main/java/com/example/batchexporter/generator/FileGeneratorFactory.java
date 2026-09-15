@@ -13,8 +13,10 @@ public class FileGeneratorFactory {
     private final Map<String, FileGenerator> generatorsByFormat;
 
     public FileGeneratorFactory(List<FileGenerator> generators) {
-        this.generatorsByFormat = generators.stream()
-                .collect(Collectors.toMap(FileGenerator::getFormat, Function.identity()));
+        this.generatorsByFormat = new java.util.HashMap<>();
+        for (FileGenerator generator : generators) {
+            this.generatorsByFormat.put(generator.getFormat(), generator);
+        }
     }
 
     public FileGenerator getGenerator(String format) {
