@@ -24,7 +24,6 @@ repositories {
 
 dependencies {
     // Spring Boot
-    implementation 'org.springframework.boot:spring-boot-starter-batch'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // MySQL
@@ -43,7 +42,6 @@ dependencies {
 
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.batch:spring-batch-test'
     testRuntimeOnly 'com.h2database:h2'
 }
 

@@ -1,15 +1,16 @@
 package com.example.batchexporter.config;
 
+import com.example.batchexporter.generator.FileGenerator;
+import com.example.batchexporter.generator.FileGeneratorFactory;
+import com.example.batchexporter.service.ExportService;
+import com.example.batchexporter.service.ExportServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import java.io.File;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -17,42 +18,46 @@ public class BatchJobLauncher implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(BatchJobLauncher.class);
 
-    private final JobLauncher jobLauncher;
-    private final Map<String, Job> exportJobs;
     private final BatchExportProperties properties;
+    private final ExportServiceRegistry exportServiceRegistry;
+    private final FileGeneratorFactory fileGeneratorFactory;
 
-    public BatchJobLauncher(JobLauncher jobLauncher,
-                            Map<String, Job> exportJobs,
-                            BatchExportProperties properties) {
-        this.jobLauncher = jobLauncher;
-        this.exportJobs = exportJobs;
+    public BatchJobLauncher(BatchExportProperties properties,
+                            ExportServiceRegistry exportServiceRegistry,
+                            FileGeneratorFactory fileGeneratorFactory) {
         this.properties = properties;
+        this.exportServiceRegistry = exportServiceRegistry;
+        this.fileGeneratorFactory = fileGeneratorFactory;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        Set<String> jobsToRun = resolveJobsToRun(args);
+        Set<String> exportsToRun = resolveExportsToRun(args);
 
-        for (String exportName : jobsToRun) {
-            Job job = exportJobs.get(exportName);
-            if (job == null) {
-                throw new IllegalStateException(
-                        "No job found for: " + exportName
-                        + ". Available: " + exportJobs.keySet());
+        for (String exportName : exportsToRun) {
+            log.info("Starting export: {}", exportName);
+
+            BatchExportProperties.ExportDefinition def = properties.getExport(exportName);
+
+            ExportService exportService = exportServiceRegistry.getService(def.getBean());
+            FileGenerator generator = fileGeneratorFactory.getGenerator(def.getFileType());
+
+            String outputDir = def.getOutputDir();
+            String outputPath = outputDir + "/" + def.getOutputFile();
+
+            File dir = new File(outputDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
             }
 
-            log.info("Starting export job: {}", exportName);
+            Object data = exportService.fetchData();
+            generator.generate(List.of(data), outputPath);
 
-            JobParameters params = new JobParametersBuilder()
-                    .addLong("timestamp", System.currentTimeMillis())
-                    .addString("exportName", exportName)
-                    .toJobParameters();
-
-            jobLauncher.run(job, params);
+            log.info("Export completed: {} -> {}", exportName, outputPath);
         }
     }
 
-    private Set<String> resolveJobsToRun(String[] args) {
+    private Set<String> resolveExportsToRun(String[] args) {
         if (args.length == 0) {
             log.info("No export name specified, running all: {}", properties.getExports().keySet());
             return properties.getExports().keySet();

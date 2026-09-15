@@ -11,11 +11,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-  batch:
-    jdbc:
-      initialize-schema: always
-    job:
-      enabled: false
 
 # --- Configuration des exports ---
 # Pour ajouter un nouvel export :
