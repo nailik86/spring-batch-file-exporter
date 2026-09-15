@@ -1,12 +1,8 @@
 package com.example.batchexporter.service;
 
-import com.example.batchexporter.dto.ProductDto;
-import com.example.batchexporter.entity.Product;
 import com.example.batchexporter.processor.ProductProcessor;
 import com.example.batchexporter.repository.ProductRepository;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class ProductExportService implements ExportService {
@@ -25,14 +21,9 @@ public class ProductExportService implements ExportService {
     }
 
     @Override
-    public List<?> fetchData() {
+    public Object fetchData() {
         return productRepository.findAllActiveProducts().stream()
                 .map(productProcessor::process)
                 .toList();
-    }
-
-    @Override
-    public Object wrapForExport(List<?> items) {
-        return items;
     }
 }

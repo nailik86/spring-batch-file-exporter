@@ -1,16 +1,13 @@
 package com.example.batchexporter.config;
 
 import com.example.batchexporter.generator.FileGeneratorFactory;
-import com.example.batchexporter.reader.GenericExportReader;
 import com.example.batchexporter.service.ExportService;
 import com.example.batchexporter.service.ExportServiceRegistry;
 import com.example.batchexporter.writer.GenericExportWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.listener.StepExecutionListenerSupport;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
@@ -68,27 +65,12 @@ public class BatchConfig {
                 }, transactionManager)
                 .build();
 
-        GenericExportWriter writer = new GenericExportWriter(
-                exportService,
-                fileGeneratorFactory.getGenerator(def.getFileType()),
-                outputPath
-        );
-
         Step exportStep = new StepBuilder(name + "_export", jobRepository)
-                .<Object, Object>chunk(100, transactionManager)
-                .reader(new GenericExportReader(exportService))
-                .writer(writer)
-                .listener(new StepExecutionListenerSupport() {
-                    @Override
-                    public org.springframework.batch.core.ExitStatus afterStep(StepExecution stepExecution) {
-                        try {
-                            writer.flush();
-                        } catch (Exception e) {
-                            throw new RuntimeException("Failed to flush export: " + name, e);
-                        }
-                        return stepExecution.getExitStatus();
-                    }
-                })
+                .tasklet(new GenericExportWriter(
+                        exportService,
+                        fileGeneratorFactory.getGenerator(def.getFileType()),
+                        outputPath
+                ), transactionManager)
                 .build();
 
         return new JobBuilder(name + "ExportJob", jobRepository)

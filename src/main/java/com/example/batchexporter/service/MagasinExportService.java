@@ -10,16 +10,15 @@ import java.util.List;
 @Component
 public class MagasinExportService implements ExportService {
 
-    // TODO: inject a MagasinRepository here for real data
     @Override
     public String getName() {
         return "magasin";
     }
 
     @Override
-    public List<?> fetchData() {
-        // Replace with repository call: magasinRepository.findAll()
-        return List.of(
+    public Object fetchData() {
+        // TODO: replace with magasinRepository.findAll() + mapping
+        List<MagasinDto> magasins = List.of(
                 MagasinDto.builder()
                         .magasinId("ID1")
                         .magasinsSuccursale(List.of(
@@ -34,12 +33,7 @@ public class MagasinExportService implements ExportService {
                         ))
                         .build()
         );
-    }
 
-    @Override
-    public Object wrapForExport(List<?> items) {
-        @SuppressWarnings("unchecked")
-        List<MagasinDto> magasins = (List<MagasinDto>) items;
         return MagasinExportDto.builder().list(magasins).build();
     }
 }

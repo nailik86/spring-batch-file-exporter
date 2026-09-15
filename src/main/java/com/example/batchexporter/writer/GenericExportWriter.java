@@ -2,18 +2,18 @@ package com.example.batchexporter.writer;
 
 import com.example.batchexporter.generator.FileGenerator;
 import com.example.batchexporter.service.ExportService;
-import org.springframework.batch.item.Chunk;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.repeat.RepeatStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class GenericExportWriter implements ItemWriter<Object> {
+public class GenericExportWriter implements Tasklet {
 
     private final ExportService exportService;
     private final FileGenerator fileGenerator;
     private final String outputPath;
-    private final List<Object> buffer = new ArrayList<>();
 
     public GenericExportWriter(ExportService exportService,
                                FileGenerator fileGenerator,
@@ -24,13 +24,9 @@ public class GenericExportWriter implements ItemWriter<Object> {
     }
 
     @Override
-    public void write(Chunk<? extends Object> chunk) {
-        buffer.addAll(chunk.getItems());
-    }
-
-    public void flush() throws Exception {
-        Object wrapped = exportService.wrapForExport(buffer);
-        fileGenerator.generate(List.of(wrapped), outputPath);
-        buffer.clear();
+    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+        Object data = exportService.fetchData();
+        fileGenerator.generate(List.of(data), outputPath);
+        return RepeatStatus.FINISHED;
     }
 }
