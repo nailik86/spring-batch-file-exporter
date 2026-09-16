@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 @Component
 public class JsonFileGenerator implements FileGenerator {
@@ -21,9 +20,8 @@ public class JsonFileGenerator implements FileGenerator {
     }
 
     @Override
-    public void generate(List<?> items, String outputPath) throws IOException {
-        Object toWrite = (items.size() == 1) ? items.get(0) : items;
-        objectMapper.writeValue(new File(outputPath), toWrite);
+    public void generate(Object data, String outputPath) throws IOException {
+        objectMapper.writeValue(new File(outputPath), data);
     }
 
     @Override

@@ -10,7 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.List;
 import java.util.Set;
 
 @Component
@@ -51,7 +50,7 @@ public class BatchJobLauncher implements CommandLineRunner {
             }
 
             Object data = exportService.fetchData();
-            generator.generate(List.of(data), outputPath);
+            generator.generate(data, outputPath);
 
             log.info("Export completed: {} -> {}", exportName, outputPath);
         }

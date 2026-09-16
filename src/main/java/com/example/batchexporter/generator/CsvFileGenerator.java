@@ -13,8 +13,8 @@ public class CsvFileGenerator implements FileGenerator {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void generate(List<?> items, String outputPath) throws IOException {
-        List<ProductDto> products = (List<ProductDto>) items;
+    public void generate(Object data, String outputPath) throws IOException {
+        List<ProductDto> products = (List<ProductDto>) data;
         try (CSVWriter writer = new CSVWriter(new FileWriter(outputPath))) {
             writer.writeNext(new String[]{"id", "name", "category", "unit_price", "stock_quantity", "total_value"});
             for (ProductDto p : products) {
