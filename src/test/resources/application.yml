@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+batch:
+  exports:
+    magasin:
+      bean: magasin
+      file-type: json
+      output-dir: ./output/test/magasins
+      output-file: magasins_export.json
+    product:
+      bean: product
+      file-type: json
+      output-dir: ./output/test/products
+      output-file: products_export.json
